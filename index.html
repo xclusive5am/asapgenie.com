@@ -1,69 +1,107 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>My Delivery Service</title>
+	<title>Delivery Website</title>
 </head>
 <body>
-	<h1>My Delivery Service</h1>
-	<p>We offer fast, reliable delivery within a 5 mile radius of 160 River Street, Hackensack, NJ 07601. Our hours of operation are Monday through Sunday, 9am to 12am.</p>
-	<h2>Order Tracking</h2>
-	<p>Enter your order number to track your delivery:</p>
-	<form>
-		<label for="order-number">Order Number:</label><br>
-		<input type="text" id="order-number" name="order-number"><br>
-		<input type="submit" value="Track Delivery">
-	</form>
-	<h2>Place an Order</h2>
-	<p>Please fill out the form below to place an order. Note that you must be at least 21 years old to place an order with us.</p>
-	<form>
+	<h1>Welcome to our Delivery Website</h1>
+	<p>We deliver within a 5 mile radius of 160 River Street, Hackensack, New Jersey 07601</p>
+	<h2>Order Form</h2>
+	<form id="order-form" method="post" action="/process-order">
 		<label for="name">Name:</label><br>
 		<input type="text" id="name" name="name"><br>
 		<label for="email">Email:</label><br>
-		<input type="text" id="email" name="email"><br>
+		<input type="email" id="email" name="email"><br>
 		<label for="phone">Phone:</label><br>
-		<input type="text" id="phone" name="phone"><br>
+		<input type="tel" id="phone" name="phone"><br>
 		<label for="address">Address:</label><br>
 		<input type="text" id="address" name="address"><br>
 		<label for="age">Age:</label><br>
-		<input type="text" id="age" name="age"><br>
-		<label for="order-items">Order Items:</label><br>
-		<textarea id="order-items" name="order-items"></textarea><br>
+		<input type="number" id="age" name="age"><br>
+		<label for="items">Items:</label><br>
+		<textarea id="items" name="items"></textarea><br>
 		<input type="submit" value="Place Order">
-	</form>
-	<h2>Back End Order Processing</h2>
-	<p>As an employee, you can use the form below to process orders that have been received:</p>
-	<form>
-		<label for="order-number">Order Number:</label><br>
-		<input type="text" id="order-number" name="order-number"><br>
-		<label for="order-status">Order Status:</label><br>
-		<select id="order-status" name="order-status">
-			<option value="accepted">Accepted</option>
-			<option value="declined">Declined</option>
-		</select><br>
-		<input type="submit" value="Update Order Status">
-	</form>
-	<h2>Real-Time Stock Updates</h2>
-	<p>Use the form below to update the available stock for our products:</p>
-	<form>
-		<label for="product-name">Product Name:</label><br>
-		<input type="text" id="product-name" name="product-name"><br>
-		<label for="stock-level">Stock Level:</label><br>
-		<input type="text" id="stock-level" name="stock-level"><br>
-		<input type="submit" value="Update Stock">
-	</form>
-	<h2>Order ETA</h2>
-	<p>Enter your order number to see the estimated time of arrival for your delivery:</p>
-	<form>
-		<label for="order-number">Order Number:</label><br>
-		<input type="text" id="order-number" name="order-number"><br>
-		<input type="submit" value="See ETA">
-	</form>
-	<h2>Two Minutes Away Alert</h2>
-	<p>Enter your phone number to receive a text message alert when your order is two minutes away:</p>
-	<form>
-		<label for="phone">Phone:</label><br>
-		<input type="text" id="phone" name="phone"><br>
-		<input type="submit" value="Sign Up for Alerts">
-	</form>
-</body>
-</html>
+	</form> 
+
+	<script>
+		// Validate form data before submission
+		const form = document.getElementById('order-form');
+		form.addEventListener('submit', e => {
+			e.preventDefault();
+
+			const age = form.elements.age.value;
+			const operatingHours = ['9am', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm', '8pm', '9pm', '10pm', '11pm', '12am'];
+			const currentTime = new Date().toLocaleTimeString('en-US', { hour: 'numeric', hour12: true });
+
+			if (age < 21) {
+				alert('You must be 21 or older to place an order.');
+				return;
+			}
+
+			if (!operatingHours.includes(currentTime)) {
+				alert('We are currently not accepting orders. Our operating hours are 9am to 12am, Monday through Sunday.');
+				return;
+			}
+
+			form.submit();
+		});
+	</script>
+
+	<?php
+		// Connect to the database
+		$host = "localhost";
+		$username = "username";
+		$password = "password";
+		$dbname = "database_name";
+		$conn = mysqli_connect($host, $username, $password, $dbname);
+
+		// Check connection
+				if (!$conn) {
+			die("Connection failed: " . mysqli_connect_error());
+		}
+
+		// Check if the form was submitted
+		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+			// Get the form data
+			$name = mysqli_real_escape_string($conn, $_POST['name']);
+			$email = mysqli_real_escape_string($conn, $_POST['email']);
+			$phone = mysqli_real_escape_string($conn, $_POST['phone']);
+			$address = mysqli_real_escape_string($conn, $_POST['address']);
+			$age = mysqli_real_escape_string($conn, $_POST['age']);
+			$items = mysqli_real_escape_string($conn, $_POST['items']);
+
+			// Calculate the distance and delivery time using the Google Maps API
+			$origin = "160 River Street, Hackensack, New Jersey 07601";
+			$destination = $address;
+			$apiKey = "YOUR_API_KEY";
+			$apiUrl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=$origin&destinations=$destination&key=$apiKey";
+			$response = file_get_contents($apiUrl);
+			$data = json_decode($response, true);
+			$distance = $data['rows'][0]['elements'][0]['distance']['text'];
+			$duration = $data['rows'][0]['elements'][0]['duration']['text'];
+
+			// Insert the order into the database
+			$sql = "INSERT INTO orders (name, email, phone, address, age, items, distance, duration) VALUES ('$name', '$email', '$phone', '$address', '$age', '$items', '$distance', '$duration')";
+			if (mysqli_query($conn, $sql)) {
+				echo "Order placed successfully.";
+			} else {
+				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			}
+		}
+
+		// Retrieve the orders from the database
+		$sql = "SELECT * FROM orders";
+		$result = mysqli_query($conn, $sql);
+
+		if (mysqli_num_rows($result) > 0) {
+			echo "<h2>Incoming Orders</h2>";
+			echo "<table>";
+			echo "<tr>";
+			echo "<th>Name</th>";
+			echo "<th>Email</th>";
+			echo "<th>Phone</th>";
+			echo "<th>Address</th>";
+			echo "<th>Age</th>";
+			echo "<th>Items</th>";
+			
+
