@@ -1,0 +1,379 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="1894.6">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Helvetica Neue'}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Helvetica Neue'; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;html&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Delivery Website&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;body&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h1&gt;Welcome to our Delivery Website&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;p&gt;Enter your contact information and place an order:&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;form id="order-form"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label for="name"&gt;Name:&lt;/label&gt;&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;input type="text" id="name"&gt;&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label for="email"&gt;Email:&lt;/label&gt;&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;input type="text" id="email"&gt;&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label for="phone"&gt;Phone:&lt;/label&gt;&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;input type="text" id="phone"&gt;&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label for="dob"&gt;Date of Birth:&lt;/label&gt;&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;input type="date" id="dob"&gt;&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label for="address"&gt;Address:&lt;/label&gt;&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;input type="text" id="address"&gt;&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label for="items"&gt;Items:&lt;/label&gt;&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;input type="text" id="items"&gt;&lt;br&gt;&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button type="submit"&gt;Place Order&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/form&gt;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h2&gt;Delivery Tracking&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;p&gt;Status: &lt;span id="status"&gt;&lt;/span&gt;&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;p&gt;Estimated time of arrival: &lt;span id="eta"&gt;&lt;/span&gt;&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1">// Submit event listener for the order form</p>
+<p class="p1">document.getElementById('order-form').addEventListener('submit', function(event) {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>event.preventDefault();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Get the entered contact information and order items</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const name = document.getElementById('name').value;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const email = document.getElementById('email').value;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const phone = document.getElementById('phone').value;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const dob = document.getElementById('dob').value;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const address = document.getElementById('address').value;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const items = document.getElementById('items').value;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Calculate the customer's age</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const today = new Date();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const birthDate = new Date(dob);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const age = today.getFullYear() - birthDate.getFullYear();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const month = today.getMonth() - birthDate.getMonth();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if (month &lt; 0 || (month === 0 &amp;&amp; today.getDate() &lt; birthDate.getDate())) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>age--;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Check if the customer is at least 21 years old</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if (age &gt;= 21) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Send an AJAX request to the server to save the customer information and get the delivery status and ETA</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const xhr = new XMLHttpRequest();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>xhr.open('POST', '/place-order');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>xhr.setRequestHeader('Content-Type', 'application/json</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1">// Submit event listener for the order form</p>
+<p class="p1">document.getElementById('order-form').addEventListener('submit', function(event) {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>event.preventDefault();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Get the entered contact information and order items</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const name = document.getElementById('name').value;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const email = document.getElementById('email').value;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const phone = document.getElementById('phone').value;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const address = document.getElementById('address').value;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const items = document.getElementById('items').value;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Send an AJAX request to the server to save the customer information and get the delivery status and ETA</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const xhr = new XMLHttpRequest();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>xhr.open('POST', '/place-order');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>xhr.setRequestHeader('Content-Type', 'application/json');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>xhr.onload = function() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (xhr.status === 200) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Update the delivery tracking information</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const response = JSON.parse(xhr.responseText</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1">// Store location</p>
+<p class="p1">const storeLocation = {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>address: '160 River Street, Hackensack, NJ 07601',</p>
+<p class="p1"><span class="Apple-converted-space">  </span>latitude: 40.883955,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>longitude: -74.043471</p>
+<p class="p1">};</p>
+<p class="p2"><br></p>
+<p class="p1">// Radius for delivery (in miles)</p>
+<p class="p1">const deliveryRadius = 5;</p>
+<p class="p2"><br></p>
+<p class="p1">// Submit event listener for the order form</p>
+<p class="p1">document.getElementById('order-form').addEventListener('submit', function(event) {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>event.preventDefault();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Get the entered address and items</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const address = document.getElementById('address').value;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const items = document.getElementById('items').value;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Calculate the distance between the entered address and the store</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const distance = calculateDistance(address, storeLocation);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Check if the distance is within the delivery radius</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if (distance &lt;= deliveryRadius) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Set the delivery status to "in progress" and the ETA to 30 minutes</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('status').innerHTML = 'In progress';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('eta').innerHTML = '30 minutes';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Set the delivery status to "not available"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('status').innerHTML = 'Not available';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('eta').innerHTML = '';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1">});</p>
+<p class="p2"><br></p>
+<p class="p1">// Function to calculate the distance between two locations</p>
+<p class="p1">function calculateDistance(address1, location2) {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Use the Google Maps API to calculate the distance between the addresses</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const response = fetch(`https://maps.googleapis.com/maps/api/distancematrix/json?origins=${address1}&amp;destinations=${location2.latitude},${location2.longitude}&amp;key=YOUR_</p>
+<p class="p2"><br></p>
+<p class="p1">CREATE TABLE customers (</p>
+<p class="p1"><span class="Apple-converted-space">  </span>id INTEGER PRIMARY KEY AUTO_INCREMENT,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>name VARCHAR(255) NOT NULL,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>email VARCHAR(255) NOT NULL,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>phone VARCHAR(255) NOT NULL,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>address VARCHAR(255) NOT NULL</p>
+<p class="p1">);</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1">CREATE TABLE orders (</p>
+<p class="p1"><span class="Apple-converted-space">  </span>id INTEGER PRIMARY KEY AUTO_INCREMENT,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>name VARCHAR(255) NOT NULL,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>email VARCHAR(255) NOT NULL,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>phone VARCHAR(255) NOT NULL,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>address VARCHAR(255) NOT NULL,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>items VARCHAR(255) NOT NULL,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>status ENUM('pending', 'accepted', 'declined') NOT NULL DEFAULT 'pending'</p>
+<p class="p1">);</p>
+<p class="p2"><br></p>
+<p class="p1">npm install mysql express</p>
+<p class="p2"><br></p>
+<p class="p1">const mysql = require('mysql');</p>
+<p class="p1">const express = require('express');</p>
+<p class="p2"><br></p>
+<p class="p1">// Set up the MySQL connection</p>
+<p class="p1">const connection = mysql.createConnection({</p>
+<p class="p1"><span class="Apple-converted-space">  </span>host: 'localhost',</p>
+<p class="p1"><span class="Apple-converted-space">  </span>user: 'YOUR_USERNAME',</p>
+<p class="p1"><span class="Apple-converted-space">  </span>password: 'YOUR_PASSWORD',</p>
+<p class="p1"><span class="Apple-converted-space">  </span>database: 'YOUR_DATABASE_NAME'</p>
+<p class="p1">});</p>
+<p class="p2"><br></p>
+<p class="p1">// Set up the Express app</p>
+<p class="p1">const app = express();</p>
+<p class="p1">app.use(express.json());</p>
+<p class="p2"><br></p>
+<p class="p1">// Endpoint to place an order</p>
+<p class="p1">app.post('/place-order', function(req, res) {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Get the order information from the request body</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const order = req.body;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Insert the order into the database</p>
+<p class="p1"><span class="Apple-converted-space">  </span>connection.query('INSERT INTO orders SET ?', order, function(error, results) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (error) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Return an error if there was a problem inserting the order</p>
+<p class="p1"><span class="Apple-converted-space">      </span>res.status(500).send({ error: 'Error placing order' });</p>
+<p class="p1"><span class="Apple-converted-space">    </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Return the delivery status and ETA</p>
+<p class="p1"><span class="Apple-converted-space">      </span>res.send({</p>
+<p class="p1"><span class="Apple-converted-space">        </span>status: 'In progress',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>eta: '30 minutes'</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>});</p>
+<p class="p1">});</p>
+<p class="p2"><br></p>
+<p class="p1">// Endpoint to accept or decline an order</p>
+<p class="p1">app.put('/update-order/:id', function(req, res) {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Get the order ID and status from the request params and body</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const id = req.params.id;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const status = req.body.status;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Update the order status in the database</p>
+<p class="p1"><span class="Apple-converted-space">  </span>connection.query('UPDATE orders SET status = ? WHERE id = ?', [status, id], function(error, results) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (error) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Return an error if there was a problem updating the order</p>
+<p class="p1"><span class="Apple-converted-space">      </span>res.status(500).send({ error: 'Error updating order' });</p>
+<p class="p1"><span class="Apple-converted-space">    </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Return the updated order</p>
+<p class="p1"><span class="Apple-converted-space">      </span>connection.query('SELECT * FROM orders WHERE id = ?', id, function(error, results) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (error) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>// Return an error if there was a problem selecting the order</p>
+<p class="p2"><span class="Apple-converted-space">         </span></p>
+<p class="p2"><br></p>
+<p class="p1">CREATE TABLE stock (</p>
+<p class="p1"><span class="Apple-converted-space">  </span>id INTEGER PRIMARY KEY AUTO_INCREMENT,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>item VARCHAR(255) NOT NULL,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>quantity INTEGER NOT NULL</p>
+<p class="p1">);</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1">npm install mysql express socket.io</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1">const mysql = require('mysql');</p>
+<p class="p1">const express = require('express');</p>
+<p class="p1">const app = express();</p>
+<p class="p1">const server = require('http').Server(app);</p>
+<p class="p1">const io = require('socket.io')(server);</p>
+<p class="p2"><br></p>
+<p class="p1">// Set up the MySQL connection</p>
+<p class="p1">const connection = mysql.createConnection({</p>
+<p class="p1"><span class="Apple-converted-space">  </span>host: 'localhost',</p>
+<p class="p1"><span class="Apple-converted-space">  </span>user: 'YOUR_USERNAME',</p>
+<p class="p1"><span class="Apple-converted-space">  </span>password: 'YOUR_PASSWORD',</p>
+<p class="p1"><span class="Apple-converted-space">  </span>database: 'YOUR_DATABASE_NAME'</p>
+<p class="p1">});</p>
+<p class="p2"><br></p>
+<p class="p1">// Set up Socket.IO to listen for updates</p>
+<p class="p1">io.on('connection', function(socket) {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Endpoint</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1">const hoursOfOperation = {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>'Monday': '9am - 12am',</p>
+<p class="p1"><span class="Apple-converted-space">  </span>'Tuesday': '9am - 12am',</p>
+<p class="p1"><span class="Apple-converted-space">  </span>'Wednesday': '9am - 12am',</p>
+<p class="p1"><span class="Apple-converted-space">  </span>'Thursday': '9am - 12am',</p>
+<p class="p1"><span class="Apple-converted-space">  </span>'Friday': '9am - 12am',</p>
+<p class="p1"><span class="Apple-converted-space">  </span>'Saturday': '9am - 12am',</p>
+<p class="p1"><span class="Apple-converted-space">  </span>'Sunday': '9am - 12am'</p>
+<p class="p1">};</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1">// Get the current day of the week</p>
+<p class="p1">const today = new Date().toLocaleString('en-US', { weekday: 'long' });</p>
+<p class="p2"><br></p>
+<p class="p1">// Display the current day's hours of operation</p>
+<p class="p1">document.write(`&lt;p&gt;Today's hours of operation: ${hoursOfOperation[today]}&lt;/p&gt;`);</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1">for (let day in hoursOfOperation) {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>document.write(`&lt;p&gt;${day}: ${hoursOfOperation[day]}&lt;/p&gt;`);</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1">npm install geolib</p>
+<p class="p2"><br></p>
+<p class="p1">const geolib = require('geolib');</p>
+<p class="p2"><br></p>
+<p class="p1">const storeLocation = { latitude: 40.886857, longitude: -74.042754 };</p>
+<p class="p1">const customerLocation = { latitude: order.latitude, longitude: order.longitude };</p>
+<p class="p2"><br></p>
+<p class="p1">const distance = geolib.getDistance(storeLocation, customerLocation);</p>
+<p class="p2"><br></p>
+<p class="p1">if (distance &lt;= 8000) { // 8000 meters is approximately 5 miles</p>
+<p class="p1"><span class="Apple-converted-space">  </span>// The customer's address is within the 5 mile radius, so we can place the order</p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Insert the order into the database</p>
+<p class="p1"><span class="Apple-converted-space">  </span>connection.query('INSERT INTO orders SET ?', order, function(error, results) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (error) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Return an error if there was a problem inserting the order</p>
+<p class="p1"><span class="Apple-converted-space">      </span>res.status(500).send({ error: 'Error placing order' });</p>
+<p class="p1"><span class="Apple-converted-space">    </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Return the delivery status and ETA</p>
+<p class="p1"><span class="Apple-converted-space">      </span>res.send({</p>
+<p class="p1"><span class="Apple-converted-space">        </span>status: 'In progress',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>eta: '30 minutes'</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>});</p>
+<p class="p1">} else {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>// The customer's address is outside the 5 mile radius, so we cannot place the order</p>
+<p class="p1"><span class="Apple-converted-space">  </span>res.status(400).send({ error: 'Address is outside the delivery radius' });</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">npm install request</p>
+<p class="p2"><br></p>
+<p class="p1">const request = require('request');</p>
+<p class="p2"><br></p>
+<p class="p1">const apiKey = 'YOUR_API_KEY';</p>
+<p class="p1">const address = encodeURIComponent(order.address);</p>
+<p class="p2"><br></p>
+<p class="p1">// Make a request to the Google Maps Geocoding API to get the latitude and longitude for the customer's address</p>
+<p class="p1">request(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&amp;key=${apiKey}`, function(error, response, body) {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if (error || response.statusCode !== 200) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Return an error if there was a problem making the request</p>
+<p class="p1"><span class="Apple-converted-space">    </span>res.status(500).send({ error: 'Error geocoding address' });</p>
+<p class="p1"><span class="Apple-converted-space">  </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Parse the response body</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const data = JSON.parse(body);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (data.status === 'OK') {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Get the latitude and longitude from the response</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const latitude = data.results[0].geometry.location.lat;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const longitude = data.results[0].geometry.location.lng;</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Calculate the distance between the store and the customer's address using the Haversine formula</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const geolib = require('geolib');</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const storeLocation = { latitude: 40.886857, longitude: -74.042754 };</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const customerLocation = { latitude: latitude, longitude: longitude };</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const distance = geolib.getDistance(storeLocation, customerLocation);</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (distance &lt;= 8000) { // 8000 meters is approximately 5 miles</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// The customer's address is within the 5 mile radius, so we can place the order</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Insert the order into the database</p>
+<p class="p1"><span class="Apple-converted-space">        </span>connection.query('INSERT INTO orders SET ?', order, function(error, results) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>if (error) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Return an error if there was a problem inserting the order</p>
+<p class="p1"><span class="Apple-converted-space">            </span>res.status(500).send({ error: 'Error placing order</p>
+<p class="p2"><br></p>
+<p class="p1">CREATE TABLE orders (</p>
+<p class="p1"><span class="Apple-converted-space">  </span>id INTEGER PRIMARY KEY AUTO_INCREMENT,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>customer_name VARCHAR(255) NOT NULL,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>customer_email VARCHAR(255) NOT NULL,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>customer_phone VARCHAR(255) NOT NULL,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>customer_address VARCHAR(255) NOT NULL,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>dob DATE NOT NULL,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>items TEXT NOT NULL,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>total DECIMAL(10,2) NOT NULL,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>status ENUM('In progress', 'Delivered') NOT NULL DEFAULT 'In progress',</p>
+<p class="p1"><span class="Apple-converted-space">  </span>PRIMARY KEY (id)</p>
+<p class="p1">);</p>
+<p class="p2"><br></p>
+<p class="p1">app.post('/place-order', function(req, res) {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Get the order information from the request body</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const order = req.body;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Calculate the customer's age</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const today = new Date();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const birthDate = new Date(order.dob);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const age = today.getFullYear() - birthDate.getFullYear();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const month = today.getMonth() - birthDate.getMonth();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if (month &lt; 0 || (month === 0 &amp;&amp; today.getDate() &lt; birthDate.getDate())) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>age--;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Check if the customer is at least 21 years old</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if (age &gt;= 21) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Geocode the customer's address</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const request = require('request');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const apiKey = 'YOUR_API_KEY';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const address = encodeURIComponent(order.address);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>request(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&amp;key=${apiKey}`, function(error, response, body) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (error || response.statusCode !== 200) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Return an error if there was a problem making the request</p>
+<p class="p1"><span class="Apple-converted-space">        </span>res.status(500).send({ error: 'Error geocoding address' });</p>
+<p class="p1"><span class="Apple-converted-space">      </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Parse the response body</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const data = JSON.parse(body);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (data.status === 'OK') {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>// Get the latitude and longitude from the response</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const latitude = data.results[0].geometry.location.lat;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const longitude = data.results[0].geometry.location.lng;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>// Calculate the distance between the store and the customer's address using the Haversine formula</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const geolib = require('geolib');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>const</p>
+</body>
+</html>
