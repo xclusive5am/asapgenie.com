@@ -1,14 +1,72 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Landing Page</title>
-</head>
-<body style="background-image: url('image.jpg'); background-position: center; background-repeat: no-repeat; background-color: black;">
-<h1 style="text-align: center;">Welcome to Our Online Store</h1>
-<a href="/shopping-page" style="display: block; text-align: center; font-weight: bold; color: red; font-family: Helvetica;margin-top: 200px; font-size: 80px;">Shop</a>
+from queue import Queue
+import telegram
+import requests
+import re
 
-	
-	<body style="font-family: Futura Bold, sans-serif; font-weight: bold;">
-</body>
-</html>
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
+from secrets import api_key
+
+bot = telegram.Bot(token=api_key)
+
+update_queue = Queue()
+updater = Updater(api_key, update_queue=update_queue)
+
+def start(update, context):
+    context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a bot, please talk to me!")
+
+def handle_message(update, context):
+    # Print the message text to the console
+    print(update.message.text)
+    # If the message says "menu", send the menu
+    if update.message.text == 'menu':
+        send_menu(update.message.chat_id)
+    else:
+        # Otherwise, assume the message is an order and process it
+        process_order(update.message)
+
+def send_menu(chat_id):
+    # Send a message with the menu
+    bot.send_message(chat_id=chat_id, text='Menu:\n\nPizza - $10\nBurger - $8\nFries - $5\n\nTo order, please send a message with the item and quantity. For example, "2 pizzas"')
+
+def process_order(message):
+    # Extract the item and quantity from the message text
+    order_regex = r'(\d+) (pizzas?|burgers?|fries)'
+    match = re.search(order_regex, message.text)
+    if match:
+        quantity = int(match.group(1))
+        item = match.group(2)
+        # Calculate the cost of the order
+        cost = 0
+        if item == 'pizza' or item == 'pizzas':
+            cost = quantity * 10
+        elif item == 'burger' or item == 'burgers':
+            cost = quantity * 8
+        elif item == 'fries':
+            cost = quantity * 5
+        else:
+            bot.send_message(chat_id=message.chat_id, text='Sorry
+        # Calculate the distance from the restaurant
+        api_key = 'YOUR_API_KEY'
+        restaurant_address = '160 river st hackensack nj 07601'
+        customer_address = message.location.latitude + ',' + message.location.longitude
+        url = f'https://maps.googleapis.com/maps/api/distancematrix/json?origins={restaurant_address}&destinations={customer_address}&key={api_key}'
+        response = requests.get(url)
+        data = response.json()
+        distance = data['rows'][0]['elements'][0]['distance']['value'] / 1609.34  # convert meters to miles
+        if distance > 5:
+            bot.send_message(chat_id=message.chat_id, text='Sorry, we do not deliver to that location.')
+            return
+
+        # Send the receipt
+        receipt = f'Total cost: ${cost}\nDistance: {distance:.2f} miles'
+
+# Add the start command handler
+start_handler = CommandHandler('start', start)
+updater.dispatcher.add_handler(start_handler)
+
+# Add the message handler
+message_handler = MessageHandler(filters=None, callback=handle_message)
+updater.dispatcher.add_handler(message_handler)
+
+updater.start_polling(1.0)
